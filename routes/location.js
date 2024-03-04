@@ -11,7 +11,7 @@ mongoose
   .connect(url)
   .then(() => {
     console.log(process.env.MONGO_URL);
-    console.log(process.env.Port);
+    console.log(process.env.PORT);
     console.log("Connected to database!");
   })
   .catch(() => {
