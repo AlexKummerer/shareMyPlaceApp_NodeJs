@@ -5,8 +5,7 @@ const UserLocations = require("../models/userLocation");
 
 const router = express.Router();
 
-const url =
-  "";
+const url = process.env.MONGO_URL || "mongodb://localhost:27017/locations";
 
 mongoose
   .connect(url)
@@ -41,12 +40,20 @@ router.post("/add-location", (req, res, next) => {
 
 router.get("/location/:lid", async (req, res, next) => {
   const locationId = req.params.lid;
-;
-  const location = await UserLocations.findById(locationId);
-  if (!location) {
-    return res.status(404).json({ message: "Not found!" });
+
+  try {
+    const location = await UserLocations.findById(locationId);
+
+    if (!location) {
+      return res.status(404).json({ message: "Not found!" });
+    }
+    res.json({ address: location.address, coordinates: location.coords });
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .json({ message: "An error occurred while retrieving the location." });
   }
-  res.json({ address: location.address, coordinates: location.coords });
 });
 
 module.exports = router;
